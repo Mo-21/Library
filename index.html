@@ -21,6 +21,11 @@
             <label for="number_of_pages">Number of Pages:</label>
             <input type="number" name="number_of_pages" id="number_of_pages">
 
+            <select id="book_status" name="read">
+                <option value="read">Read</option>
+                <option value="unread">Unread</option>
+            </select>
+
             <button class="closeWindow" type="submit">Done</button>
             <button class="resetWindow" type="reset">Reset</button>
         </form>
@@ -41,8 +46,6 @@
         }
 
         ];
-
-        console.log(books.length);
 
         const display = document.querySelector('.screen');
         let screenValue = "";
@@ -68,24 +71,27 @@
             divForm.style.display = 'none';
             const bookTitle = document.getElementById("book_name").value;
             const bookPages = document.getElementById("number_of_pages").value;
-            const bookNew = new NewBook(bookTitle, bookPages);
+            const bookStatus = document.getElementById("book_status").value;
+            const bookNew = new NewBook(bookTitle, bookPages, bookStatus);
             books.push(bookNew);
             length = length + 1;
+            console.log(books);
 
-            addNewBook(length);      
+            addNewBook(length, bookStatus);      
             addToDisplay(books[length - 1].bookName);
         });        
 
         
 
-        function addNewBook(length) {
+        function addNewBook(length, bookStatus) {
             const addNewElement = document.createElement("div");
             addNewElement.id = "newBook";
             addNewElement.textContent = `${books[length - 1].bookName}: ${books[length - 1].bookProgress}`;
             addNewElement.setAttribute("book-number", `${length}`);
 
             const deleteBook = createDeleteBook(addNewElement);
-            
+            const bookStatusToggle = addBookStatus(length, bookStatus);
+
             secondScreen.appendChild(addNewElement);
         }
 
@@ -99,7 +105,6 @@
             removeButton.addEventListener('click', () => {
                 addNewElement.remove();
                 length = length - 1;
-                console.log(length);
                 removeButton.remove();
                 removeFromDisplay(length); 
             });
@@ -114,8 +119,35 @@
                 screenValue = books[i-1].bookName + '\n' + screenValue;
                 display.innerText = screenValue;
         }
-        console.log(screenValue);
         return screenValue;
+        }
+
+        function addBookStatus(length, bookStatus) {
+            const readButton = document.createElement("button");
+            readButton.textContent = "Read";
+            secondScreen.appendChild(readButton);
+
+            const unreadButton = document.createElement("button");
+            unreadButton.textContent = "Unread";
+            secondScreen.appendChild(unreadButton);
+
+            if(bookStatus === 'read') {
+                readButton.classList.add("readStatus");
+            } else if(bookStatus === 'unread') {
+                unreadButton.classList.add("unreadStatus");
+            };
+
+            readButton.addEventListener('click', () => {
+                readButton.classList.add("readStatus");
+                unreadButton.classList.remove("unreadStatus");
+                books[length-1].bookStatus = "read";
+            });
+
+            unreadButton.addEventListener('click', () => {
+                unreadButton.classList.add("unreadStatus");
+                readButton.classList.remove("readStatus");
+                books[length-1].bookStatus = "unread";
+            });
         }
 
         function addToDisplay(string) {
@@ -130,9 +162,10 @@
         }
         } 
 
-        function NewBook(bookName, bookProgress) {
+        function NewBook(bookName, bookProgress, bookStatus) {
             this.bookName = bookName;
             this.bookProgress = bookProgress;
+            this.bookStatus = bookStatus;
         }
 
     </script>

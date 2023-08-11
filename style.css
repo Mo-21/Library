@@ -29,3 +29,15 @@ form {
 #newBook {
     display: none;
 }
+
+.readStatus {
+    background-color: greenyellow;
+    box-shadow: 4px;
+    font-weight: 500;
+}
+
+.unreadStatus {
+    background-color: greenyellow;
+    box-shadow: 4px;
+    font-weight: 500;
+}
