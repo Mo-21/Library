@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Library</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div>
+        <h1 class="heading">Current Books</h1>
+        <div class="screen"></div>
+        <button class="add">Add Book</button>
+    </div>
+
+    <div class="addBookScreen">
+        <form id="form" action="" method="post">
+            <label for="book_name">Book Name:</label>
+            <input type="text" name="book_name" id="book_name">
+
+            <label for="number_of_pages">Number of Pages:</label>
+            <input type="number" name="number_of_pages" id="number_of_pages">
+
+            <button class="closeWindow" type="submit">Done</button>
+            <button class="resetWindow" type="reset">Reset</button>
+        </form>
+    </div>
+
+    <div class="secondScreen"></div>
+
+    
+    <script>
+        let books = [
+        {
+            bookName: 'Book1',
+            bookProgress: '41'
+        },
+        {
+            bookName: 'Book2',
+            bookProgress: '342'
+        }
+
+        ];
+
+        console.log(books.length);
+
+        const display = document.querySelector('.screen');
+        let screenValue = "";
+        let length = books.length;
+
+        addToScreen(length);
+
+        const addButton = document.querySelector('.add');
+        const divForm = document.querySelector('.addBookScreen');
+
+        addButton.addEventListener('click', () => {
+            divForm.style.display = 'flex';
+        });
+
+        const form = document.getElementById("form");
+        form.addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevents the default form submission behavior
+        })
+
+        const secondScreen = document.querySelector('.secondScreen')
+        const doneButton = document.querySelector('.closeWindow');
+        doneButton.addEventListener('click', () => {
+            divForm.style.display = 'none';
+            const bookTitle = document.getElementById("book_name").value;
+            const bookPages = document.getElementById("number_of_pages").value;
+            const bookNew = new NewBook(bookTitle, bookPages);
+            books.push(bookNew);
+            length = length + 1;
+
+            addNewBook(length);      
+            addToDisplay(books[length - 1].bookName);
+        });        
+
+        
+
+        function addNewBook(length) {
+            const addNewElement = document.createElement("div");
+            addNewElement.id = "newBook";
+            addNewElement.textContent = `${books[length - 1].bookName}: ${books[length - 1].bookProgress}`;
+            addNewElement.setAttribute("book-number", `${length}`);
+
+            const deleteBook = createDeleteBook(addNewElement);
+            
+            secondScreen.appendChild(addNewElement);
+        }
+
+        function createDeleteBook(addNewElement) {
+            const removeButton = document.createElement("button");
+            removeButton.id = "remove";
+            removeButton.textContent = "Delete";
+            removeButton.setAttribute("book-number", `${length}`);
+            secondScreen.appendChild(removeButton);
+
+            removeButton.addEventListener('click', () => {
+                addNewElement.remove();
+                length = length - 1;
+                console.log(length);
+                removeButton.remove();
+                removeFromDisplay(length); 
+            });
+            return removeButton;
+        }
+
+        function removeFromDisplay(length) {
+            books.splice(length,1);
+            console.log(books);
+            screenValue = "";
+            for(i=length; i>0; i--) {
+                screenValue = books[i-1].bookName + '\n' + screenValue;
+                display.innerText = screenValue;
+        }
+        console.log(screenValue);
+        return screenValue;
+        }
+
+        function addToDisplay(string) {
+            screenValue = string + '\n' + screenValue;
+            display.innerText = screenValue;
+        }
+
+        function addToScreen(length) {
+            for(i=length; i>0; i--) {
+                screenValue = books[i-1].bookName + '\n' + screenValue;
+                display.innerText = screenValue;
+        }
+        } 
+
+        function NewBook(bookName, bookProgress) {
+            this.bookName = bookName;
+            this.bookProgress = bookProgress;
+        }
+
+    </script>
+</body>
+</html>
