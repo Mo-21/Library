@@ -106,6 +106,7 @@
                 addNewElement.remove();
                 length = length - 1;
                 removeButton.remove();
+
                 removeFromDisplay(length); 
             });
             return removeButton;
@@ -125,10 +126,12 @@
         function addBookStatus(length, bookStatus) {
             const readButton = document.createElement("button");
             readButton.textContent = "Read";
+            readButton.setAttribute("book-number", `${length}`);
             secondScreen.appendChild(readButton);
 
             const unreadButton = document.createElement("button");
             unreadButton.textContent = "Unread";
+            unreadButton.setAttribute("book-number", `${length}`);
             secondScreen.appendChild(unreadButton);
 
             if(bookStatus === 'read') {
@@ -148,13 +151,33 @@
                 readButton.classList.remove("readStatus");
                 books[length-1].bookStatus = "unread";
             });
+
+             const y = deleteBookStatus(readButton, unreadButton, length);
         }
 
+        function deleteBookStatus(readButton, unreadButton, length) {
+            const x = document.querySelectorAll("#remove");
+            const z = readButton.getAttribute('book-number');
+            console.log(z);
+            x.forEach(element => {
+                element.addEventListener('click', () => {
+                    const dataValue = element.getAttribute('book-number');
+                    console.log(dataValue);
+                    if(dataValue === z) {
+                        readButton.remove();
+                        unreadButton.remove();
+                    }
+                });
+            });
+        }
+
+        //for new added books
         function addToDisplay(string) {
             screenValue = string + '\n' + screenValue;
             display.innerText = screenValue;
         }
 
+        //for already added books
         function addToScreen(length) {
             for(i=length; i>0; i--) {
                 screenValue = books[i-1].bookName + '\n' + screenValue;
