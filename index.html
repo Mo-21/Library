@@ -7,10 +7,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div>
-        <h1 class="heading">Current Books</h1>
-        <div class="screen"></div>
-        <button class="add">Add Book</button>
+    <div class="container">
+        <div class="main">
+            <h1 class="heading">Library</h1>
+            <div class="screen">
+                <div class="readings"></div>
+                <div class="toggles"></div>
+            </div>
+            <button class="add"><img src="./assets/add_FILL0_wght400_GRAD0_opsz48.svg" alt="add-book"></button>
+        </div>
     </div>
 
     <div class="addBookScreen">
@@ -37,17 +42,17 @@
     <script>
         let books = [
         {
-            bookName: 'Book1',
+            bookName: 'Harry Potter',
             bookProgress: '41'
         },
         {
-            bookName: 'Book2',
+            bookName: 'Game of Thrones',
             bookProgress: '342'
         }
 
         ];
 
-        const display = document.querySelector('.screen');
+        const display = document.querySelector('.readings');
         let screenValue = "";
         let length = books.length;
 
@@ -65,7 +70,7 @@
             event.preventDefault(); // Prevents the default form submission behavior
         })
 
-        const secondScreen = document.querySelector('.secondScreen')
+        const secondScreen = document.querySelector('.toggles')
         const doneButton = document.querySelector('.closeWindow');
         doneButton.addEventListener('click', () => {
             divForm.style.display = 'none';
@@ -78,24 +83,15 @@
             console.log(books);
 
             addNewBook(length, bookStatus);      
-            addToDisplay(books[length - 1].bookName);
+            addToDisplay(books[length - 1].bookName, books[length - 1].bookProgress);
         });        
 
-        
-
         function addNewBook(length, bookStatus) {
-            const addNewElement = document.createElement("div");
-            addNewElement.id = "newBook";
-            addNewElement.textContent = `${books[length - 1].bookName}: ${books[length - 1].bookProgress}`;
-            addNewElement.setAttribute("book-number", `${length}`);
-
-            const deleteBook = createDeleteBook(addNewElement);
+            const deleteBook = createDeleteBook();
             const bookStatusToggle = addBookStatus(length, bookStatus);
-
-            secondScreen.appendChild(addNewElement);
         }
 
-        function createDeleteBook(addNewElement) {
+        function createDeleteBook() {
             const removeButton = document.createElement("button");
             removeButton.id = "remove";
             removeButton.textContent = "Delete";
@@ -103,10 +99,8 @@
             secondScreen.appendChild(removeButton);
 
             removeButton.addEventListener('click', () => {
-                addNewElement.remove();
                 length = length - 1;
                 removeButton.remove();
-
                 removeFromDisplay(length); 
             });
             return removeButton;
@@ -114,10 +108,9 @@
 
         function removeFromDisplay(length) {
             books.splice(length,1);
-            console.log(books);
             screenValue = "";
-            for(i=length; i>0; i--) {
-                screenValue = books[i-1].bookName + '\n' + screenValue;
+            for(i=0; i<length; i++) {
+                screenValue = books[i].bookName + '\n' + `Progress: page ${books[i].bookProgress}` + '\n' + '\n' + screenValue;
                 display.innerText = screenValue;
         }
         return screenValue;
@@ -126,11 +119,13 @@
         function addBookStatus(length, bookStatus) {
             const readButton = document.createElement("button");
             readButton.textContent = "Read";
+            readButton.id = "toggle";
             readButton.setAttribute("book-number", `${length}`);
             secondScreen.appendChild(readButton);
 
             const unreadButton = document.createElement("button");
             unreadButton.textContent = "Unread";
+            unreadButton.id = "toggle";
             unreadButton.setAttribute("book-number", `${length}`);
             secondScreen.appendChild(unreadButton);
 
@@ -172,15 +167,15 @@
         }
 
         //for new added books
-        function addToDisplay(string) {
-            screenValue = string + '\n' + screenValue;
+        function addToDisplay(string, page) {
+            screenValue = string + '\n' + `Progress: page ${page}` + '\n' + '\n' + screenValue;
             display.innerText = screenValue;
         }
 
         //for already added books
         function addToScreen(length) {
-            for(i=length; i>0; i--) {
-                screenValue = books[i-1].bookName + '\n' + screenValue;
+            for(i=0; i<length; i++) {
+                screenValue = books[i].bookName + '\n' + `Progress: page ${books[i].bookProgress}` + '\n' + '\n' + screenValue;
                 display.innerText = screenValue;
         }
         } 
