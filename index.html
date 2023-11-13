@@ -1,191 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book Library</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <div class="container">
-        <div class="main">
-            <h1 class="heading">Library</h1>
-            <div class="screen">
-                <div class="readings"></div>
-                <div class="toggles"></div>
-            </div>
-            <button class="add"><img src="./assets/add_FILL0_wght400_GRAD0_opsz48.svg" alt="add-book"></button>
+      <div class="main">
+        <h1 class="heading">Library</h1>
+        <div class="screen">
+          <div class="readings"></div>
         </div>
+        <button class="add">
+          <img
+            src="./assets/add_FILL0_wght400_GRAD0_opsz48.svg"
+            alt="add-book"
+          />
+        </button>
+      </div>
     </div>
 
     <div class="addBookScreen">
-        <form id="form" action="" method="post">
-            <label for="book_name">Book Name:</label>
-            <input type="text" name="book_name" id="book_name">
+      <form id="form" action="" method="post">
+        <label for="book_name">Book Name:</label>
+        <input type="text" name="book_name" id="book_name" />
 
-            <label for="number_of_pages">Number of Pages:</label>
-            <input type="number" name="number_of_pages" id="number_of_pages">
+        <label for="number_of_pages">Number of Pages:</label>
+        <input type="number" name="number_of_pages" id="number_of_pages" />
 
-            <select id="book_status" name="read">
-                <option value="read">Read</option>
-                <option value="unread">Unread</option>
-            </select>
+        <select id="book_status" name="read">
+          <option value="Read">Read</option>
+          <option value="Unread">Unread</option>
+        </select>
 
-            <button class="closeWindow" type="submit">Done</button>
-            <button class="resetWindow" type="reset">Reset</button>
-        </form>
+        <button class="closeWindow" type="submit">Done</button>
+        <button class="resetWindow" type="reset">Reset</button>
+      </form>
     </div>
 
-    <div class="secondScreen"></div>
-
-    
-    <script>
-        let books = [
-        {
-            bookName: 'Harry Potter',
-            bookProgress: '41'
-        },
-        {
-            bookName: 'Game of Thrones',
-            bookProgress: '342'
-        }
-
-        ];
-
-        const display = document.querySelector('.readings');
-        let screenValue = "";
-        let length = books.length;
-
-        addToScreen(length);
-
-        const addButton = document.querySelector('.add');
-        const divForm = document.querySelector('.addBookScreen');
-
-        addButton.addEventListener('click', () => {
-            divForm.style.display = 'flex';
-        });
-
-        const form = document.getElementById("form");
-        form.addEventListener('submit', (event) => {
-            event.preventDefault(); // Prevents the default form submission behavior
-        })
-
-        const secondScreen = document.querySelector('.toggles')
-        const doneButton = document.querySelector('.closeWindow');
-        doneButton.addEventListener('click', () => {
-            divForm.style.display = 'none';
-            const bookTitle = document.getElementById("book_name").value;
-            const bookPages = document.getElementById("number_of_pages").value;
-            const bookStatus = document.getElementById("book_status").value;
-            const bookNew = new NewBook(bookTitle, bookPages, bookStatus);
-            books.push(bookNew);
-            length = length + 1;
-            console.log(books);
-
-            addNewBook(length, bookStatus);      
-            addToDisplay(books[length - 1].bookName, books[length - 1].bookProgress);
-        });        
-
-        function addNewBook(length, bookStatus) {
-            const deleteBook = createDeleteBook();
-            const bookStatusToggle = addBookStatus(length, bookStatus);
-        }
-
-        function createDeleteBook() {
-            const removeButton = document.createElement("button");
-            removeButton.id = "remove";
-            removeButton.textContent = "Delete";
-            removeButton.setAttribute("book-number", `${length}`);
-            secondScreen.appendChild(removeButton);
-
-            removeButton.addEventListener('click', () => {
-                length = length - 1;
-                removeButton.remove();
-                removeFromDisplay(length); 
-            });
-            return removeButton;
-        }
-
-        function removeFromDisplay(length) {
-            books.splice(length,1);
-            screenValue = "";
-            for(i=0; i<length; i++) {
-                screenValue = books[i].bookName + '\n' + `Progress: page ${books[i].bookProgress}` + '\n' + '\n' + screenValue;
-                display.innerText = screenValue;
-        }
-        return screenValue;
-        }
-
-        function addBookStatus(length, bookStatus) {
-            const readButton = document.createElement("button");
-            readButton.textContent = "Read";
-            readButton.id = "toggle";
-            readButton.setAttribute("book-number", `${length}`);
-            secondScreen.appendChild(readButton);
-
-            const unreadButton = document.createElement("button");
-            unreadButton.textContent = "Unread";
-            unreadButton.id = "toggle";
-            unreadButton.setAttribute("book-number", `${length}`);
-            secondScreen.appendChild(unreadButton);
-
-            if(bookStatus === 'read') {
-                readButton.classList.add("readStatus");
-            } else if(bookStatus === 'unread') {
-                unreadButton.classList.add("unreadStatus");
-            };
-
-            readButton.addEventListener('click', () => {
-                readButton.classList.add("readStatus");
-                unreadButton.classList.remove("unreadStatus");
-                books[length-1].bookStatus = "read";
-            });
-
-            unreadButton.addEventListener('click', () => {
-                unreadButton.classList.add("unreadStatus");
-                readButton.classList.remove("readStatus");
-                books[length-1].bookStatus = "unread";
-            });
-
-             const y = deleteBookStatus(readButton, unreadButton, length);
-        }
-
-        function deleteBookStatus(readButton, unreadButton, length) {
-            const x = document.querySelectorAll("#remove");
-            const z = readButton.getAttribute('book-number');
-            console.log(z);
-            x.forEach(element => {
-                element.addEventListener('click', () => {
-                    const dataValue = element.getAttribute('book-number');
-                    console.log(dataValue);
-                    if(dataValue === z) {
-                        readButton.remove();
-                        unreadButton.remove();
-                    }
-                });
-            });
-        }
-
-        //for new added books
-        function addToDisplay(string, page) {
-            screenValue = string + '\n' + `Progress: page ${page}` + '\n' + '\n' + screenValue;
-            display.innerText = screenValue;
-        }
-
-        //for already added books
-        function addToScreen(length) {
-            for(i=0; i<length; i++) {
-                screenValue = books[i].bookName + '\n' + `Progress: page ${books[i].bookProgress}` + '\n' + '\n' + screenValue;
-                display.innerText = screenValue;
-        }
-        } 
-
-        function NewBook(bookName, bookProgress, bookStatus) {
-            this.bookName = bookName;
-            this.bookProgress = bookProgress;
-            this.bookStatus = bookStatus;
-        }
-
-    </script>
-</body>
+    <script src="./index.js"></script>
+  </body>
 </html>
